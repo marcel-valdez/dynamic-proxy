@@ -1,14 +1,14 @@
 ﻿using System;
-using DynamicProxy;
+using AutoProxy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Test.DynamicProxy.HelperClasses;
+using Test.AutoProxy.HelperClasses;
 using TestingTools.Extensions;
 using TestingTools.Core;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Test.DynamicProxy
+namespace Test.AutoProxy
 {
 
     /// <summary>
@@ -98,7 +98,7 @@ namespace Test.DynamicProxy
             mapping.ArgumentTypes = new Type[] { typeof(bool) };
             mapping.Subject = (arg, args) =>
             {
-                System.Console.Out.WriteLine("Subject called");
+                Console.Out.WriteLine("Subject called");
                 return true;
             };
             bool replace = false;
@@ -116,14 +116,14 @@ namespace Test.DynamicProxy
         {
             // Arrange
             IInterfaceMap target = CreateIInterfaceMap();
-            
+
             IMethodMapping mapping = CreateIMethodMapping();
             mapping.Name = "test";
             mapping.GenericArgumentTypes = new Type[] { typeof(string), typeof(object) };
             mapping.ArgumentTypes = new Type[] { typeof(bool) };
             mapping.Subject = (arg, args) =>
             {
-                System.Console.Out.WriteLine("Subject called");
+                Console.Out.WriteLine("Subject called");
                 return true;
             };
             IMethodMapping replacement = CreateIMethodMapping();
@@ -132,7 +132,7 @@ namespace Test.DynamicProxy
             replacement.ArgumentTypes = new Type[] { typeof(bool) };
             replacement.Subject = (arg, args) =>
             {
-                System.Console.Out.WriteLine("Subject replacement called");
+                Console.Out.WriteLine("Subject replacement called");
                 return true;
             };
 
@@ -153,7 +153,7 @@ namespace Test.DynamicProxy
         /// <param name="genericArgs"></param>
         /// <param name="argTypes"></param>
         [TestMethod()]
-        public void GetMappedMethodTestWithoutReturnType()
+        public void CanGetMappedMethodTestWithoutReturnType()
         {
             // Arrange
             Type[] argTypes = new Type[] { typeof(float) };
@@ -175,7 +175,7 @@ namespace Test.DynamicProxy
         ///A test for GetMappedMethod
         ///</summary>
         [TestMethod()]
-        public void GetMappedMethodTestWithReturnType()
+        public void CanGetMappedMethodTestWithReturnType()
         {
             // Arrange
             IInterfaceMap target = CreateIInterfaceMap();
@@ -197,7 +197,7 @@ namespace Test.DynamicProxy
         ///A test for Remove
         ///</summary>
         [TestMethod()]
-        public void RemoveNonContainedTest()
+        public void CanRemoveNonContained()
         {
             // Arrange
             IInterfaceMap target = CreateIInterfaceMap();
@@ -219,7 +219,7 @@ namespace Test.DynamicProxy
         ///A test for Remove
         ///</summary>
         [TestMethod()]
-        public void RemoveContainedTest()
+        public void CanRemoveContained()
         {
             // Arrange
             IInterfaceMap target = CreateIInterfaceMap();

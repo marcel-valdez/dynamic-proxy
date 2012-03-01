@@ -1,6 +1,6 @@
 using System;
 
-namespace Test.DynamicProxy.HelperClasses
+namespace Test.AutoProxy.HelperClasses
 {
     interface ITestInterface<T>
     {

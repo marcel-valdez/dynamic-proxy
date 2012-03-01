@@ -1,15 +1,15 @@
-﻿using DynamicProxy.Extensions;
+﻿using AutoProxy.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using Fasterflect;
 using System.Reflection;
-using Test.DynamicProxy.HelperClasses;
+using Test.AutoProxy.HelperClasses;
 using Moq;
 using TestingTools.Extensions;
 using TestingTools.Core;
 
-namespace Test.DynamicProxy
+namespace Test.AutoProxy
 {
     
     

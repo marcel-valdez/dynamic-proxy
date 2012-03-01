@@ -3,7 +3,7 @@
 //     Copyright Route Manager de México, 2011(c). All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace DynamicProxy
+namespace AutoProxy
 {
     using System.Collections.Generic;
     using System.Linq;

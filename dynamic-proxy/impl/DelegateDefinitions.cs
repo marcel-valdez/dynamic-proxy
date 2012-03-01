@@ -1,4 +1,4 @@
-﻿namespace DynamicProxy
+﻿namespace AutoProxy
 {
     /// <summary>
     /// Generic mapped method

@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
-using DynamicProxy;
+using AutoProxy;
 using Fasterflect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Test.DynamicProxy.HelperClasses;
+using Test.AutoProxy.HelperClasses;
 using TestingTools.Extensions;
 using TestingTools.Core;
 
-namespace Test.DynamicProxy
+namespace Test.AutoProxy
 {
     /// <summary>
     ///This is a test class for MatchingProxyTest and is intended

@@ -3,7 +3,7 @@
 //     Copyright 2011 (c) . All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
-namespace DynamicProxy
+namespace AutoProxy
 {
     using System;
     using System.Collections;
@@ -11,7 +11,7 @@ namespace DynamicProxy
     using System.Diagnostics.Contracts;
     using System.Linq;
     using CommonUtilities.Reflection;
-    using DynamicProxy.Extensions;
+    using Extensions;
 
     /// <summary>
     /// Responsabilidad: Mapear lo métodos abstractos de una interfaz a métodos concretos
@@ -84,17 +84,34 @@ namespace DynamicProxy
         {
             argTypes = argTypes ?? Type.EmptyTypes;
             Contract.Assume(!string.IsNullOrEmpty(name));
+            return this.GetMappedMethod(typeof(TSubject), name, argTypes, genericArgs);
+        }
+
+        /// <summary>
+        /// Gets the mapped method.
+        /// </summary>
+        /// <param name="typeOfTheSubject">The type of the subject.</typeparam>
+        /// <param name="name">The method name.</param>
+        /// <param name="argTypes">The arguments passed in to the method.</param>
+        /// <param name="genericArgs">The generic argument types.</param>
+        /// <returns>
+        /// The mapped method
+        /// </returns>
+        public MappedMethod GetMappedMethod(Type typeOfTheSubject, string name, Type[] argTypes, params Type[] genericArgs)
+        {
+            argTypes = argTypes ?? Type.EmptyTypes;
+            Contract.Assume(!string.IsNullOrEmpty(name));
             IMethodMapping mapping = this.Lookup(name, argTypes, genericArgs);
             if (mapping == default(IMethodMapping))
             {
-                Fasterflect.MethodInvoker invoker = typeof(TSubject).GetMethod(name, argTypes, genericArgs);
+                Fasterflect.MethodInvoker invoker = typeOfTheSubject.GetMethod(name, argTypes, genericArgs);
 
                 // TODO: Abstract IMethodMapping creation?
                 mapping = new MethodMapping()
                 {
                     Name = name,
                     ArgumentTypes = argTypes,
-                    GenericArgumentTypes = genericArgs,
+                    GenericArgumentTypes = genericArgs ?? Type.EmptyTypes,
                     Subject = (subject, args) => invoker(subject, args)
                 };
 

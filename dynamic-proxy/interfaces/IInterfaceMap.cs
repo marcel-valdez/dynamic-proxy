@@ -1,4 +1,5 @@
-namespace DynamicProxy
+using System.Diagnostics.Contracts;
+namespace AutoProxy
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +8,7 @@ namespace DynamicProxy
     /// Responsabilidad: Mapear métodos de una interfaz a métodos definidos dinámicamente
     /// Encapsula: La estructura del mapeo, y posiblemente la creación automática de tales métodos.
     /// </summary>
-    [System.Diagnostics.Contracts.ContractClass(typeof(IInterfaceMapCodeContract))]
+    [ContractClass(typeof(IInterfaceMapCodeContract))]
     public interface IInterfaceMap : IEnumerable<IMethodMapping>
     {
         /// <summary>
@@ -46,6 +47,18 @@ namespace DynamicProxy
         /// The mapped method
         /// </returns>
         MappedMethod GetMappedMethod<TSubject>(string name, Type[] argTypes, params Type[] genericArgs);
+
+        /// <summary>
+        /// Gets the mapped method.
+        /// </summary>
+        /// <param name="subjectType">Type of the subject.</param>
+        /// <param name="name">The method name.</param>
+        /// <param name="argTypes">The types of the arguments passed in to the method.</param>
+        /// <param name="genericArgs">The generic argument types.</param>
+        /// <returns>
+        /// The mapped method
+        /// </returns>
+        MappedMethod GetMappedMethod(Type subjectType, string name, Type[] argTypes, params Type[] genericArgs);
 
         /// <summary>
         /// Adds the specified mapping.

@@ -3,7 +3,7 @@
 //     Copyright Route Manager de México(c) 2011. All rights reserved.
 // </copyright>
 // ------------------------------------------------------------------------
-namespace DynamicProxy
+namespace AutoProxy
 {
     using System;
     using System.Diagnostics.Contracts;
@@ -36,16 +36,27 @@ namespace DynamicProxy
         /// <param name="invocation">The invocation.</param>
         public void Intercept(IInvocation invocation)
         {
+            Contract.Assume(this.interfaceMap.Subject != null);
             Contract.Assume(invocation != null);
             Contract.Assume(invocation.Arguments != null);
             Contract.Assume(invocation.Method != null);
 
-            Type[] argumentTypes = Type.GetTypeArray(invocation.Arguments);
-            string methodName = invocation.Method.Name;
-            MappedMethod mapping = this.interfaceMap.GetMappedMethod<T>(methodName, argumentTypes, invocation.GenericArguments);
+            Type[] lArgumentTypes = Type.GetTypeArray(invocation.Arguments);
+            string lMethodName = invocation.Method.Name;
+            Contract.Assume(!string.IsNullOrEmpty(lMethodName));
+
+            MappedMethod mapping = this.interfaceMap.GetMappedMethod(
+                this.interfaceMap.Subject.GetType(),
+                lMethodName,
+                lArgumentTypes,
+                invocation.GenericArguments);
             Contract.Assume(mapping != null);
+
             invocation.ReturnValue = mapping(invocation.Arguments);
-            invocation.Proceed();
+            if (invocation.InvocationTarget != null)
+            {
+                invocation.Proceed();
+            }
         }
 
         [ContractInvariantMethod]

@@ -1,4 +1,4 @@
-﻿namespace Test.DynamicProxy.HelperClasses
+﻿namespace Test.AutoProxy.HelperClasses
 {
     class TestClass : ITestInterface<double>
     {

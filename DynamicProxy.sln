@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dynamic-proxy", "dynamic-proxy\dynamic-proxy.csproj", "{0BCB9263-8AE8-4FED-A2C3-8BFE8AE835A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoProxy", "dynamic-proxy\AutoProxy.csproj", "{0BCB9263-8AE8-4FED-A2C3-8BFE8AE835A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.DynamicProxy", "test\Test.DynamicProxy.csproj", "{949BA2A6-D93F-4738-B9FF-671350E725EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.AutoProxy", "test\Test.AutoProxy.csproj", "{949BA2A6-D93F-4738-B9FF-671350E725EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

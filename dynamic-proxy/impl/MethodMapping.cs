@@ -1,4 +1,4 @@
-namespace DynamicProxy
+namespace AutoProxy
 {
     using System;
     using System.Collections.Generic;

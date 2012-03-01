@@ -1,4 +1,4 @@
-namespace DynamicProxy
+namespace AutoProxy
 {
     using System.Diagnostics.Contracts;
     using System;
@@ -61,6 +61,18 @@ namespace DynamicProxy
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return default(System.Collections.IEnumerator);
+        }
+
+        #endregion
+
+        #region IInterfaceMap Members
+
+
+        public MappedMethod GetMappedMethod(Type subjectType, string name, Type[] argTypes, params Type[] genericArgs)
+        {
+            Contract.Requires(!String.IsNullOrEmpty(name), "name is null or empty.");
+            Contract.Ensures(Contract.Result<MappedMethod>() != null);
+            return default(MappedMethod);
         }
 
         #endregion

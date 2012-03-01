@@ -1,11 +1,13 @@
-﻿namespace DynamicProxy
+﻿namespace AutoProxy
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// Represents the relation of a reflected method to a Method Invokation
     /// </summary>
+    [ContractClass(typeof(IMethodMappingCodeContract))]
     public interface IMethodMapping
     {
         /// <summary>

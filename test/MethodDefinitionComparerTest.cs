@@ -1,11 +1,11 @@
-﻿using DynamicProxy.Helpers;
+﻿using AutoProxy.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using TestingTools.Extensions;
 using TestingTools.Core;
 
-namespace Test.DynamicProxy
+namespace Test.AutoProxy
 {
     /// <summary>
     ///This is a test class for MethodDefinitionComparerTest and is intended
