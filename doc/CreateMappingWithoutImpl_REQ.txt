@@ -1,0 +1,62 @@
+Business Event
+El usuario desea crear un mapeo de método sin que previamente haya una implementación, de manera dinámica y sin especificar los tipos de parámetros utilizando objetos Type, sino de manera expresiva.
+
+Business Use Case
+El componente debe permitir al cliente crear mapeos de manera dinámica y expresiva, permitiendo crear objetos Func y Action para mapear tales interfaces.
+
+Constraints
+- Que no se requiera utilizar objetos Type, sino puros genéricos
+- Que no se requiera poner el nombre con strings de los métodos o propiedades a utilizar
+
+Requerimientos Funcionales
+La interfaz con el usuario debe tener la siguiente definición:
+Asumiendo que: 
+
+public interface IHitman {
+	string Name { get; set; }
+	bool Kill(string Name);
+}
+
+dynamic subject = new ExpandoObject();
+subject.KillList = new List<string>();
+IInterfaceMap map;
+
+// Alternativa #1
+map.On<IHitman>() // Nótese el increíble parecido con Moq
+   .MapProperty(hitman => hitman.Name)
+   .To(subject.Name);
+
+map.On<IHitman>()
+   .MapMethod(hitman => hitman.Kill(AString))
+   .To((name) => 
+		{
+			subject.KillList.Add(name);
+			return true;
+		});
+		
+// Alternativa #2: Mapear todas las propiedades a un diccionario directamente, sin preocuparse por tener que mapear una por una
+MatchingInterceptor<IHitman> interceptor = new MatchingInterceptor<IHitman>(map);
+
+interceptor.MapPropertiesTo(subject);
+
+// Alternativa #3: Crear method mappings de manera expresiva, similar a Moq
+IMapping mapping = Mapping
+	.On<IHitman>() // IMappingInit
+	.Property(hitman => hitman.Name) // IPropertyMapping
+	.Get(subject.Name) // IPropertyMapping
+	.Set(value => { subject.Name = value; }); // IPropertyMapping
+
+IMapping mapping = Mapping
+	.On<IHitman>() // IMappingInit
+	.Method(hitman => hitman.Kill(An<string>.Arg)// IMethodMapping
+	.Call(
+		arg => 
+		{ 
+			subject.KillList.Add(arg); 
+			return true; 
+		});// IMethodMapping
+
+Requerimientos No Funcionales
+- Que se pueda usar intellisense
+- Que el API sea expresivo: Cada verbo de método represente una acción sobre el mapeo.
+
