@@ -1,6 +1,8 @@
-Dynamic proxy is an automatic proxy creator, meant to wrap classes 
-of which we don't have the source code, but need to make them testable,
-mockable, or substitutable by wrapping them with an interface.
+/**
+ * Dynamic proxy is an automatic proxy creator, meant to wrap classes 
+ * of which we don't have the source code, but need to make them testable,
+ * mockable, or substitutable by wrapping them with an interface.
+ **/
 
 namespace Program
 {
