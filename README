@@ -1,1 +1,71 @@
-// TODO: Add description of component, as well as an usage example.
+Dynamic proxy is an automatic proxy creator, meant to wrap classes 
+of which we don't have the source code, but need to make them testable,
+mockable, or substitutable by wrapping them with an interface.
+
+namespace Program
+{
+  using AutoProxy;
+  // This is the class we want to profixy, normally, this class is in
+  // a third party library or framework, otherwise we would just add: 
+  // Wrapped : IWrapper to the class definition
+  public class Wrapped
+  {
+    private string mProperty = "";
+  	public void CallMethod()
+  	{
+  		System.Console.WriteLine("Wrapped.CallMethod()");
+  	}
+  	
+  	public string Property
+  	{
+  		get {
+  			System.Console.WriteLine("Wrapped.Property.get, with value: " + this.mProperty);
+  			return this.mProperty;
+  		}
+  		
+  		set {
+  			System.Console.WriteLine("Wrapped.Property.set, with value: " + value);
+  			this.mProperty = value;
+  		}
+  	}
+  }
+  
+  // The wrapper interface, through which we will use the Wrapped object
+  public interface IWrapper
+  {
+  	void CallMethod();
+  	
+  	string Property
+  	{
+  		get;
+  		set;
+  	}
+  }
+  
+  /*
+  * In order to "proxify" the Wrapped class we just use the following
+  */  
+  public class Program
+  {
+  	public static void Main(string[] args) 
+  	{
+  		Wrapped wrapped = new Wrapped();
+  		IWrapper wrapper = wrapped.Proxify<IWrapper>();
+      Test(wrapper);
+	  }
+    
+    public static void Test(IWrapper wrapper)
+    {
+    	wrapper.CallMethod();
+  		wrapper.Property = "Hi";
+  		string data = wrapper.Property;
+    }
+  }
+
+  /*
+  * Console output:
+  Wrapped.CallMethod()
+  Wrapped.Property.get, with value: Hi
+  Wrapped.Property.set, with value: Hi
+  */
+}
