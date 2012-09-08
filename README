@@ -21,31 +21,31 @@ namespace Program
   	}
   	
     public string Property
-  	{
+    {
       get 
       {
-		Console.WriteLine("Wrapped.Property.get, with value: {0}", this.mProperty);
-  		return this.mProperty;
-	  }
+	Console.WriteLine("Wrapped.Property.get, with value: {0}", this.mProperty);
+	return this.mProperty;
+      }
   		
-  	  set 
-	  {
-  		Console.WriteLine("Wrapped.Property.set, with value: {0}", value);
-  		this.mProperty = value;
-  	  }
-  	}
+      set 
+      {
+	Console.WriteLine("Wrapped.Property.set, with value: {0}", value);
+  	this.mProperty = value;
+      }
+    }
   }
   
   // The wrapper interface, through which we will use the Wrapped object
   public interface IWrapper
   {
-  	void CallMethod();
+    void CallMethod();
   	
-  	string Property
-  	{
-  	  get;
-  	  set;
-  	}
+    string Property
+    {
+      get;
+      set;
+    }
   }
   
   /*
@@ -53,18 +53,18 @@ namespace Program
   */  
   public class Program
   {
-	public static void Main(string[] args) 
-  	{
-	  Wrapped wrapped = new Wrapped();
-  	  IWrapper wrapper = wrapped.Proxify<IWrapper>();
+    public static void Main(string[] args) 
+    {
+      Wrapped wrapped = new Wrapped();
+      IWrapper wrapper = wrapped.Proxify<IWrapper>();
       Test(wrapper);
-	}
+    }
     
     public static void Test(IWrapper wrapper)
     {
       wrapper.CallMethod();
-  	  wrapper.Property = "Hi";
-  	  string data = wrapper.Property;
+      wrapper.Property = "Hi";
+      string data = wrapper.Property;
     }
   }
 
