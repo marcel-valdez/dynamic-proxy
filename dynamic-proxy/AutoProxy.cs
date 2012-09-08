@@ -1,27 +1,17 @@
 ﻿
 namespace AutoProxy
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using Castle.DynamicProxy;
+    using Fluent;
 
     public static class AutoProxy
     {
-        private static ProxyGenerator generator = new ProxyGenerator();
+        private readonly static ProxyGenerator generator = new ProxyGenerator();
 
-        public static T Proxify<T>(this object subject)
+        public static IProxyBuilder<T> Proxify<T>(this T subject)
             where T : class
         {
-            InterfaceMap map = new InterfaceMap()
-            {
-                Subject = subject
-            };
-
-            var interceptor = new MatchingInterceptor<T>(map);
-
-            return generator.CreateInterfaceProxyWithoutTarget<T>(interceptor);
+            return new ProxyBuilder<T>(generator, subject);
         }
     }
 }

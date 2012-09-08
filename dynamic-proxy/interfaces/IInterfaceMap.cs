@@ -1,8 +1,8 @@
-using System.Diagnostics.Contracts;
 namespace AutoProxy
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
 
     /// <summary>
     /// Responsabilidad: Mapear métodos de una interfaz a métodos definidos dinámicamente

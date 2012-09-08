@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoProxy;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Test.AutoProxy.HelperClasses;
 using TestingTools.Extensions;
@@ -15,59 +15,9 @@ namespace Test.AutoProxy
     ///This is a test class for IInterfaceMapTest and is intended
     ///to contain all IInterfaceMapTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestFixture()]
     public class IInterfaceMapTest
     {
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
-
-
         internal virtual IInterfaceMap CreateIInterfaceMap()
         {
             IInterfaceMap target = new InterfaceMap()
@@ -87,7 +37,7 @@ namespace Test.AutoProxy
         /// <summary>
         ///A test for Add
         ///</summary>
-        [TestMethod()]
+        [Test()]
         public void CanAddWithReplaceSetToFalse()
         {
             // Arrange
@@ -111,7 +61,7 @@ namespace Test.AutoProxy
                 .Now();
         }
 
-        [TestMethod]
+        [Test]
         public void CanReplaceAMethodMapping()
         {
             // Arrange
@@ -152,7 +102,7 @@ namespace Test.AutoProxy
         /// </summary>
         /// <param name="genericArgs"></param>
         /// <param name="argTypes"></param>
-        [TestMethod()]
+        [Test()]
         public void CanGetMappedMethodTestWithoutReturnType()
         {
             // Arrange
@@ -171,10 +121,34 @@ namespace Test.AutoProxy
             Verify.That(result).IsEqualTo(TestClass.IntOverloadedGenericReturn).Now();
         }
 
+
+        /// <summary>
+        /// A test for GetMappedMethod
+        /// </summary>
+        /// <param name="genericArgs"></param>
+        /// <param name="argTypes"></param>
+        [Test()]
+        public void CanGetMappedMethodTestWithWithouhtGenericArguments()
+        {
+            // Arrange
+            Type[] argTypes = new Type[] { typeof(double) };
+            IInterfaceMap target = CreateIInterfaceMap();
+            target.Subject = new TestClass();
+            const string name = "IntOverloaded";
+            MappedMethod actual;
+
+            // Act
+            actual = target.GetMappedMethod<TestClass>(name, argTypes);
+            int result = (int)actual(1D);
+
+            // Assert
+            Verify.That(result).IsEqualTo(TestClass.IntOverloadedDoubleReturn).Now();
+        }
+
         /// <summary>
         ///A test for GetMappedMethod
         ///</summary>
-        [TestMethod()]
+        [Test()]
         public void CanGetMappedMethodTestWithReturnType()
         {
             // Arrange
@@ -196,7 +170,7 @@ namespace Test.AutoProxy
         /// <summary>
         ///A test for Remove
         ///</summary>
-        [TestMethod()]
+        [Test()]
         public void CanRemoveNonContained()
         {
             // Arrange
@@ -218,7 +192,7 @@ namespace Test.AutoProxy
         /// <summary>
         ///A test for Remove
         ///</summary>
-        [TestMethod()]
+        [Test()]
         public void CanRemoveContained()
         {
             // Arrange

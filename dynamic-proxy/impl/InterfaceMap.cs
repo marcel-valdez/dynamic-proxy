@@ -100,6 +100,8 @@ namespace AutoProxy
         public MappedMethod GetMappedMethod(Type typeOfTheSubject, string name, Type[] argTypes, params Type[] genericArgs)
         {
             argTypes = argTypes ?? Type.EmptyTypes;
+            genericArgs = genericArgs ?? Type.EmptyTypes;
+
             Contract.Assume(!string.IsNullOrEmpty(name));
             IMethodMapping mapping = this.Lookup(name, argTypes, genericArgs);
             if (mapping == default(IMethodMapping))
@@ -197,11 +199,26 @@ namespace AutoProxy
             Contract.Requires(!String.IsNullOrEmpty(methodName), "name is null or empty.");
             Contract.Requires(argumentTypes != null, "argTypes is null.");
 
-            return this.mappings.FirstOrDefault(mapping => mapping.Name == methodName
-                && (comparer.GetHashCode(argumentTypes) == comparer.GetHashCode(mapping.ArgumentTypes.ToArray()) ||
-                    comparer.Equals(argumentTypes, mapping.ArgumentTypes.ToArray()))
-                && (comparer.GetHashCode(genericArgumentTypes) == comparer.GetHashCode(mapping.GenericArgumentTypes.ToArray()) ||
-                    comparer.Equals(argumentTypes, mapping.GenericArgumentTypes.ToArray())));
+            genericArgumentTypes = genericArgumentTypes ?? Type.EmptyTypes;
+
+            return this.mappings.FirstOrDefault(mapping => 
+                {
+                    bool matches = mapping.Name == methodName;
+                    if (matches)
+                    {
+                        matches = 
+                            comparer.GetHashCode(argumentTypes) == comparer.GetHashCode(mapping.ArgumentTypes.ToArray()) ||
+                            comparer.Equals(argumentTypes, mapping.ArgumentTypes.ToArray());
+                        if(matches)
+                        {
+                            matches = 
+                                comparer.GetHashCode(genericArgumentTypes) == comparer.GetHashCode(mapping.GenericArgumentTypes.ToArray()) ||
+                                comparer.Equals(argumentTypes, mapping.GenericArgumentTypes.ToArray());   
+                        }
+                    }
+
+                    return matches;
+                });
         }
 
         [ContractInvariantMethod]

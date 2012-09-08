@@ -1,9 +1,10 @@
-﻿using AutoProxy.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using TestingTools.Extensions;
+using AutoProxy.Helpers;
+using NUnit.Framework;
 using TestingTools.Core;
+using TestingTools.Extensions;
+using Test.AutoProxy.HelperClasses;
 
 namespace Test.AutoProxy
 {
@@ -11,70 +12,22 @@ namespace Test.AutoProxy
     ///This is a test class for MethodDefinitionComparerTest and is intended
     ///to contain all MethodDefinitionComparerTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestFixture()]
     public class MethodDefinitionComparerTest
     {
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
-
 
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test()]
         public void CanMatchEqualPairs()
         {
             // Arrange
             MethodDefinitionComparer target = new MethodDefinitionComparer();
-            Type[] typeArgs = new Type[] { typeof(GenericParameterHelper), typeof(List<string>), typeof(int) };
-            string testMethodName = "methodname";
-            KeyValuePair<string, Type[]> x = new KeyValuePair<string, Type[]>(testMethodName, typeArgs);
-            KeyValuePair<string, Type[]> y = new KeyValuePair<string, Type[]>(testMethodName, typeArgs);
+            Type[] typeArgs = new Type[] { typeof(TestClass), typeof(List<string>), typeof(int) };
+            string TestName = "methodname";
+            KeyValuePair<string, Type[]> x = new KeyValuePair<string, Type[]>(TestName, typeArgs);
+            KeyValuePair<string, Type[]> y = new KeyValuePair<string, Type[]>(TestName, typeArgs);
             bool actual;
 
             // Act
@@ -88,15 +41,15 @@ namespace Test.AutoProxy
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test()]
         public void CanDifferentiateAgainstEmptyArgs()
         {
             // Arrange
             MethodDefinitionComparer target = new MethodDefinitionComparer();
-            Type[] typeArgs = new Type[] { typeof(GenericParameterHelper), typeof(List<string>), typeof(int) };
-            string testMethodName = "methodname";
-            KeyValuePair<string, Type[]> x = new KeyValuePair<string, Type[]>(testMethodName, typeArgs);
-            KeyValuePair<string, Type[]> y = new KeyValuePair<string, Type[]>(testMethodName, Type.EmptyTypes);
+            Type[] typeArgs = new Type[] { typeof(TestClass), typeof(List<string>), typeof(int) };
+            string TestName = "methodname";
+            KeyValuePair<string, Type[]> x = new KeyValuePair<string, Type[]>(TestName, typeArgs);
+            KeyValuePair<string, Type[]> y = new KeyValuePair<string, Type[]>(TestName, Type.EmptyTypes);
             bool actual;
 
             // Act
@@ -110,16 +63,16 @@ namespace Test.AutoProxy
         /// <summary>
         ///A test for Equals
         ///</summary>
-        [TestMethod()]
+        [Test()]
         public void CanDifferentiateAgainstDifferentNumber()
         {
             // Arrange
             MethodDefinitionComparer target = new MethodDefinitionComparer();
-            Type[] typeArgs = new Type[] { typeof(GenericParameterHelper), typeof(List<string>), typeof(int) };
-            Type[] typeArgs2 = new Type[] { typeof(GenericParameterHelper), typeof(List<string>), typeof(int), typeof(double) };
-            string testMethodName = "methodname";
-            KeyValuePair<string, Type[]> x = new KeyValuePair<string, Type[]>(testMethodName, typeArgs);
-            KeyValuePair<string, Type[]> y = new KeyValuePair<string, Type[]>(testMethodName, typeArgs2);
+            Type[] typeArgs = new Type[] { typeof(TestClass), typeof(List<string>), typeof(int) };
+            Type[] typeArgs2 = new Type[] { typeof(TestClass), typeof(List<string>), typeof(int), typeof(double) };
+            string TestName = "methodname";
+            KeyValuePair<string, Type[]> x = new KeyValuePair<string, Type[]>(TestName, typeArgs);
+            KeyValuePair<string, Type[]> y = new KeyValuePair<string, Type[]>(TestName, typeArgs2);
             bool actual;
 
             // Act
@@ -133,17 +86,17 @@ namespace Test.AutoProxy
         /// <summary>
         ///A test for GetHashCode
         ///</summary>
-        [TestMethod()]
+        [Test()]
         public void GeneratesDifferentHashcodeForDifferentPairs()
         {
             // Arrange
             MethodDefinitionComparer target = new MethodDefinitionComparer();
-            Type[] typeArgs = new Type[] { typeof(GenericParameterHelper), typeof(List<string>), typeof(int) };
-            string testMethodName = "methodname";
-            Type[] typeArgs1 = new Type[] { typeof(GenericParameterHelper), typeof(List<string>), typeof(double) };
-            string testMethodName1 = "methodname1";
-            KeyValuePair<string, Type[]> x = new KeyValuePair<string, Type[]>(testMethodName, typeArgs);
-            KeyValuePair<string, Type[]> y = new KeyValuePair<string, Type[]>(testMethodName1, typeArgs1);
+            Type[] typeArgs = new Type[] { typeof(TestClass), typeof(List<string>), typeof(int) };
+            string TestName = "methodname";
+            Type[] typeArgs1 = new Type[] { typeof(TestClass), typeof(List<string>), typeof(double) };
+            string TestName1 = "methodname1";
+            KeyValuePair<string, Type[]> x = new KeyValuePair<string, Type[]>(TestName, typeArgs);
+            KeyValuePair<string, Type[]> y = new KeyValuePair<string, Type[]>(TestName1, typeArgs1);
             int actual;
             int not_expected;
 
@@ -159,16 +112,16 @@ namespace Test.AutoProxy
         /// <summary>
         ///A test for GetHashCode
         ///</summary>
-        [TestMethod()]
+        [Test()]
         public void GeneratesSameHashCodeForSamePairs()
         {
             // Arrange
             MethodDefinitionComparer target = new MethodDefinitionComparer();
-            Type[] typeArgs = new Type[] { typeof(GenericParameterHelper), typeof(List<string>), typeof(int) };
-            Type[] typeArgs2 = new Type[] { typeof(GenericParameterHelper), typeof(List<string>), typeof(int) };
-            string testMethodName = "methodname";
-            KeyValuePair<string, Type[]> x = new KeyValuePair<string, Type[]>(testMethodName, typeArgs);
-            KeyValuePair<string, Type[]> y = new KeyValuePair<string, Type[]>(testMethodName, typeArgs2);
+            Type[] typeArgs = new Type[] { typeof(TestClass), typeof(List<string>), typeof(int) };
+            Type[] typeArgs2 = new Type[] { typeof(TestClass), typeof(List<string>), typeof(int) };
+            string TestName = "methodname";
+            KeyValuePair<string, Type[]> x = new KeyValuePair<string, Type[]>(TestName, typeArgs);
+            KeyValuePair<string, Type[]> y = new KeyValuePair<string, Type[]>(TestName, typeArgs2);
             int actual;
             int expected;
 

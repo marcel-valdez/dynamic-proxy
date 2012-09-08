@@ -68,9 +68,11 @@
     <Reference Include="Fasterflect">
       <HintPath>..\packages\fasterflect.2.0.1\lib\net40\Fasterflect.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -90,11 +92,14 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoProxyTests.cs" />
     <Compile Include="HelperClasses\IProperties.cs" />
     <Compile Include="HelperClasses\ITestInterface.cs" />
+    <Compile Include="HelperClasses\MoreProperties.cs" />
     <Compile Include="HelperClasses\Properties.cs" />
     <Compile Include="HelperClasses\TestClass.cs" />
     <Compile Include="IInterfaceMapTest.cs" />
+    <Compile Include="HelperClasses\IMoreProperties.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="MatchingInterceptorTest.cs" />
     <Compile Include="MethodDefinitionComparerTest.cs" />
@@ -102,8 +107,8 @@
     <Compile Include="ReflectionExtensionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
-    <Shadow Include="Test References\AutoProxy.accessor" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\dynamic-proxy\AutoProxy.csproj">
@@ -111,7 +116,9 @@
       <Name>AutoProxy</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Test References\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
