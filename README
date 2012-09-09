@@ -1,3 +1,4 @@
+`````csharp
 /**
  * Dynamic proxy is an automatic proxy creator, meant to wrap classes 
  * of which we don't have the source code, but need to make them testable,
@@ -86,3 +87,4 @@ void Main() {
   Wrapped.UnmatchedProperty.set, input value: 1
   Wrapped.UnmatchedProperty.get, returned value: 1
   */
+`````
