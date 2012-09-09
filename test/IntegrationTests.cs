@@ -92,7 +92,7 @@ namespace Test.AutoProxy
                     MoreProperties subject = (MoreProperties)proxied;
                     return int.Parse(subject.UnmappedProperty);
                 },
-                Name = "get_ExtraProperty",
+                Name = "get_ExtraGetProperty",
                 ArgumentTypes = Type.EmptyTypes,
                 GenericArgumentTypes = Type.EmptyTypes
             };

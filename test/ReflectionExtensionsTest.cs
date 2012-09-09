@@ -84,23 +84,5 @@ namespace Test.AutoProxy
             Verify.That(actual).IsNotNull()
                 .Now();
         }
-
-        /// <summary>
-        ///A test for GetMethod
-        ///</summary>
-        [Ignore]
-        [Test()]
-        public void GetMethodTest()
-        {
-            Type @this = null; // TODO: Initialize to an appropriate value
-            string methodname = string.Empty; // TODO: Initialize to an appropriate value
-            Type[] argumentTypes = null; // TODO: Initialize to an appropriate value
-            Type[] genericTypeArguments = null; // TODO: Initialize to an appropriate value
-            MethodInvoker expected = null; // TODO: Initialize to an appropriate value
-            MethodInvoker actual;
-            actual = ReflectionExtensions.GetMethod(@this, methodname, argumentTypes, genericTypeArguments);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
     }
 }

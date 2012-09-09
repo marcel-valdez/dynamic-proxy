@@ -1,33 +1,33 @@
 ﻿// ***********************************************************************
-// Assembly         : Test.AutoProxy
+// Assembly         : AutoProxy
 // Author           : Marcel Valdez
 // Created          : 09-08-2012
 //
 // Last Modified By : Marcel Valdez
 // Last Modified On : 09-08-2012
 // ***********************************************************************
-// <copyright file="MoreProperties.cs" company="Marcel Valdez">
+// <copyright file="With.cs" company="Marcel Valdez">
 //     Marcel Valdez. All rights reserved.
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
 
-namespace Test.AutoProxy.HelperClasses
+namespace AutoProxy.Fluent
 {
 
     /// <summary>
-    /// This is a test class to verify the property mappings
+    /// Class with argument type definitions
     /// </summary>
-    public class MoreProperties : Properties
+    public static class With
     {
         /// <summary>
-        /// Gets or sets the unmapped property.
+        /// Gets a marker for the <typeparamref name="T"/> type
         /// </summary>
-        /// <value>The unmapped property.</value>
-        public string UnmappedProperty
+        /// <typeparam name="T">The argument type</typeparam>
+        /// <returns>A marker</returns>
+        public static T Arg<T>()
         {
-            get;
-            set;
+         	return default(T);
         }
     }
 }

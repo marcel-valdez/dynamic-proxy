@@ -5,6 +5,8 @@
 // -----------------------------------------------------------------------
 
 using AutoProxy;
+using AutoProxy.Fluent;
+
 namespace Test.AutoProxy
 {
     using System;
@@ -31,7 +33,7 @@ namespace Test.AutoProxy
             };
 
             // Act
-            proxy = subject.Proxify().To<IProperties>();
+            proxy = subject.Proxify().Into<IProperties>();
 
             // Assert
             Assert.That(proxy, Is.Not.Null);
@@ -59,10 +61,10 @@ namespace Test.AutoProxy
 
             // Act
             target = source.Proxify()
-                           .Redirect<string>((subject) => subject.UnmappedProperty)
-                           .To<IMoreProperties, int>(proxy => proxy.ExtraGetProperty)
-                           .WithGetter<int>(message => int.Parse(message))
-                           .To<IMoreProperties>();
+                           .Redirect(subject => subject.UnmappedProperty)
+                           .To((IMoreProperties proxy) => proxy.ExtraGetProperty)
+                           .WithGetter(argument => int.Parse(argument))
+                           .Into<IMoreProperties>();
 
             // Assert
             Assert.That(target, Is.Not.Null);
@@ -89,16 +91,78 @@ namespace Test.AutoProxy
 
             // Act
             target = source.Proxify()
-                           .Redirect<string>((MoreProperties subject, string param) => subject.UnmappedProperty = param)
-                           .To<IMoreProperties, int>((IMoreProperties proxy) => proxy.ExtraGetSetProperty)
+                           .Redirect(subject => subject.UnmappedProperty)
+                           .To((IMoreProperties proxy) => proxy.ExtraGetSetProperty)
                            .WithSetter((int proxyArgument) => proxyArgument.ToString())
-                           .To<IMoreProperties>();
+                           .Into<IMoreProperties>();
 
             target.ExtraGetSetProperty = expectedExtraProperty;
 
             // Assert
             Assert.That(target, Is.Not.Null);
             Assert.That(source.UnmappedProperty, Is.EqualTo(expectedUnmappedProperty));
+        }
+
+        [Test]
+        public void TestIfItCanRedirectMethodWithArgumentAndReturnType()
+        {
+            // Arrange
+            int expectedNumber = 5;
+            TestClass source = new TestClass();
+            IExtraTestInterface<int> target;
+
+            // Act
+            target = source.Proxify()
+                           .Redirect(subject => subject.IntOverloaded(With.Arg<string>()))
+                           .To((IExtraTestInterface<int> proxy) => proxy.ExtraMethod(With.Arg<int>()),
+                               (int number) => number.ToString())
+                           .WithReturn(result => result.ToString())
+                           .Into<IExtraTestInterface<int>>();
+
+            string actual = target.ExtraMethod(expectedNumber);
+
+            // Assert
+            Assert.That(target, Is.Not.Null);
+            Assert.That(actual, Is.EqualTo(TestClass.IntOverloadedStringReturn.ToString()));
+        }
+
+        [Test]
+        public void TestIfItCanRedirectAMethodCall()
+        {
+            // Arrange
+            int expectedNumber = 5;
+            TestClass source = new TestClass();
+            IExtraTestInterface<int> target;
+
+            // Act
+            target = source.Proxify()
+                           .Redirect(subject => subject.IntOverloaded(With.Arg<string>()))
+                           .To((IExtraTestInterface<int> proxy) => proxy.ExtraMethod(With.Arg<int>()),
+                               (int number) => number.ToString())
+                           .WithReturn(result => result.ToString())
+                           .Into<IExtraTestInterface<int>>();
+
+            string actual = target.ExtraMethod(expectedNumber);
+
+            // Assert
+            Assert.That(target, Is.Not.Null);
+            Assert.That(actual, Is.EqualTo(TestClass.IntOverloadedStringReturn.ToString()));
+        }
+
+        [Test]
+        public void TestIfItCanRedirectAVoidMethodCall()
+        {
+            // Arrange
+            
+
+            // Act
+
+
+            // Assert
+
+
+            // Reset
+
         }
     }
 }

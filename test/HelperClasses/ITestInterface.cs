@@ -2,7 +2,18 @@ using System;
 
 namespace Test.AutoProxy.HelperClasses
 {
-    interface ITestInterface<T>
+    public interface IExtraTestInterface<T> : ITestInterface<T>
+    {
+        string ExtraMethod(int parameter);
+
+        void ExtraVoidMethod(int parameter);
+
+        string ExtraStringMethodNoParams();
+
+        void ExtraVoidMethodNoParams();
+    }
+
+    public interface ITestInterface<T>
     {
         string GetAndSetProperty
         {

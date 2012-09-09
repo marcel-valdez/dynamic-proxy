@@ -15,6 +15,7 @@ namespace AutoProxy.Fluent
 {
     using System;
     using Castle.DynamicProxy;
+    using System.Linq.Expressions;
 
     /// <summary>
     /// This class can redirect calls from the Subject to the Proxy
@@ -27,23 +28,19 @@ namespace AutoProxy.Fluent
         /// <summary>
         /// Inside builder instance, for Fluent API purposes.
         /// </summary>
-        protected readonly ProxyGenerator generator;
+        protected ProxyGenerator generator;
 
         /// <summary>
         /// The interface map
         /// </summary>
-        protected readonly InterfaceMap map;
+        protected InterfaceMap map;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProxyBuilder{TSubject}" /> class.
         /// </summary>
-        /// <param name="generator">The generator.</param>
-        /// <param name="map">The map.</param>
-        public ProxyBuilder(ProxyGenerator generator, InterfaceMap map)
-        {
-            this.generator = generator;
-            this.map = map;
-        }
+        public ProxyBuilder()
+        {}
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProxyBuilder{TSubject}" /> class.
@@ -64,29 +61,37 @@ namespace AutoProxy.Fluent
         /// </summary>
         /// <typeparam name="TProxy">The type of the T proxy.</typeparam>
         /// <returns></returns>
-        public TProxy To<TProxy>()
+        public TProxy Into<TProxy>()
             where TProxy : class
         {
             var interceptor = new MatchingInterceptor<TProxy>(map);
             return this.generator.CreateInterfaceProxyWithoutTarget<TProxy>(interceptor);
         }
 
-        /// <summary>
-        /// Starts a new method redirection
-        /// </summary>
-        /// <typeparam name="TReturn">The type of the T return.</typeparam>
-        /// <param name="invocation">The invocation.</param>
-        /// <returns></returns>
-        public IToRedirector<TSubject, TReturn> Redirect<TReturn>(Func<TSubject, TReturn> invocation)
+        public IToRedirector<TSubject, TResult> Redirect<TResult>(Expression<Func<TSubject, TResult>> invocation)
         {
-            var child = new ProxyBuilder<TSubject, TReturn>(this.generator, this.map);
-            return child.SetCall(invocation);
+            var child = new ProxyBuilder<TSubject, TResult>()
+            {
+                generator = this.generator,
+                map = this.map
+            };
+            return child.SetInvocation(invocation);
         }
 
-        public IToRedirector<TSubject, TParam> Redirect<TParam>(Action<TSubject, TParam> invocation)
+        /// <summary>
+        /// Redirects the specified invocation.
+        /// </summary>
+        /// <typeparam name="TParam">The type of the subject parameter.</typeparam>
+        /// <param name="invocation">The invocation.</param>
+        /// <returns>The proxy builder object</returns>
+        public IToRedirector<TSubject, TParam> Redirect<TParam>(Expression<Action<TSubject, TParam>> invocation)
         {
-            var child = new ProxyBuilder<TSubject, TParam>(this.generator, this.map);
-            return child.SetCall(invocation);
+            var child = new ProxyBuilder<TSubject, TParam>()
+            {
+                generator = this.generator,
+                map = this.map
+            };
+            return child.SetInvocation(invocation);
         }
     }
 }

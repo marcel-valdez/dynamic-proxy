@@ -23,11 +23,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
-    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeOnlyPublicSurface>True</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
     <CodeContractsRuntimeSkipQuantifiers>True</CodeContractsRuntimeSkipQuantifiers>
-    <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
     <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
     <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
     <CodeContractsArithmeticObligations>True</CodeContractsArithmeticObligations>
@@ -44,7 +44,7 @@
     <CodeContractsExtraAnalysisOptions />
     <CodeContractsBaseLineFile />
     <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
-    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsRuntimeCheckingLevel>Pre and Post</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>2</CodeContractsAnalysisWarningLevel>
   </PropertyGroup>
@@ -102,8 +102,11 @@
   <ItemGroup>
     <Compile Include="AutoProxy.cs" />
     <Compile Include="Fluent\Language.cs" />
+    <Compile Include="Fluent\PropertyRedirector.cs" />
     <Compile Include="Fluent\ProxyBuilderTSubject.cs" />
-    <Compile Include="Fluent\ProxyBuilderTSubjectTSubjectResult.cs" />
+    <Compile Include="Fluent\ProxyBuilderTSubjectTResult.cs" />
+    <Compile Include="Fluent\ProxyReturnRedirector.cs" />
+    <Compile Include="Fluent\With.cs" />
     <Compile Include="impl\DelegateDefinitions.cs" />
     <Compile Include="interfaces\IInterfaceMap.cs" />
     <Compile Include="interfaces\IInterfaceMapCodeContract.cs">

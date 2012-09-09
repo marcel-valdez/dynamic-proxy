@@ -15,23 +15,23 @@ namespace Program
   public class Wrapped
   {
     private string mProperty = "";
-  	public void CallMethod()
-  	{
-  	  Console.WriteLine("Wrapped.CallMethod()");
-  	}
-  	
+    public void CallMethod()
+    {
+      Console.WriteLine("Wrapped.CallMethod()");
+    }
+    
     public string Property
     {
       get 
       {
-	Console.WriteLine("Wrapped.Property.get, with value: {0}", this.mProperty);
-	return this.mProperty;
+    Console.WriteLine("Wrapped.Property.get, with value: {0}", this.mProperty);
+    return this.mProperty;
       }
-  		
+        
       set 
       {
-	Console.WriteLine("Wrapped.Property.set, with value: {0}", value);
-  	this.mProperty = value;
+    Console.WriteLine("Wrapped.Property.set, with value: {0}", value);
+    this.mProperty = value;
       }
     }
   }
@@ -40,7 +40,7 @@ namespace Program
   public interface IWrapper
   {
     void CallMethod();
-  	
+    
     string Property
     {
       get;
@@ -56,7 +56,7 @@ namespace Program
     public static void Main(string[] args) 
     {
       Wrapped wrapped = new Wrapped();
-      IWrapper wrapper = wrapped.Proxify<IWrapper>();
+      IWrapper wrapper = wrapped.Proxify().Into<IWrapper>();
       Test(wrapper);
     }
     
