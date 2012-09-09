@@ -63,12 +63,12 @@ void Main() {
 	  Test(wrapper);
 	  
 	  IWrapper customWrapper = wrapped.Proxify()
-	  						.Redirect(subject => subject.UnmatchedProperty)
-							.Into<IWrapper>()
-							.Property(proxy => proxy.NonMatch)
-							.WithGetter(arg => int.Parse(arg))
-							.WithSetter(arg => arg.ToString())
-							.Proxy;
+  					.Redirect(subject => subject.UnmatchedProperty)
+					.Into<IWrapper>()
+					.Property(proxy => proxy.NonMatch)
+					.WithGetter(arg => int.Parse(arg))
+					.WithSetter(arg => arg.ToString())
+					.Proxy;
 	  TestNonMatch(customWrapper);
 	}
 	
