@@ -104,8 +104,10 @@
     <Compile Include="Fluent\Language.cs" />
     <Compile Include="Fluent\PropertyRedirector.cs" />
     <Compile Include="Fluent\ProxyBuilderTSubject.cs" />
+    <Compile Include="Fluent\ProxyBuilderTSubjectTProxyTResult.cs" />
     <Compile Include="Fluent\ProxyBuilderTSubjectTResult.cs" />
     <Compile Include="Fluent\ProxyReturnRedirector.cs" />
+    <Compile Include="Fluent\VoidCallProxyBuilder.cs" />
     <Compile Include="Fluent\With.cs" />
     <Compile Include="impl\DelegateDefinitions.cs" />
     <Compile Include="interfaces\IInterfaceMap.cs" />

@@ -2,9 +2,10 @@ namespace AutoProxy.Fluent
 {
     using System;
 
-    public class ProxyReturnRedirector<TSubject, TProxyResult, TSubjectResult> : ProxyBuilder<TSubject, TSubjectResult>,
-        IWithReturnRedirector<TSubject, TProxyResult, TSubjectResult>
+    public class ProxyReturnRedirector<TSubject, TProxy, TProxyResult, TSubjectResult> : ProxyBuilder<TSubject, TProxy, TSubjectResult>,
+        IWithReturnRedirector<TSubject, TProxy, TProxyResult, TSubjectResult>
             where TSubject : class
+            where TProxy : class
     {
 
         /// <summary>
@@ -17,7 +18,7 @@ namespace AutoProxy.Fluent
             set;
         }
 
-        public IProxyBuilder<TSubject> WithReturn(Func<TSubjectResult, TProxyResult> transform)
+        public IProxyBuilder<TSubject, TProxy> WithReturn(Func<TSubjectResult, TProxyResult> transform)
         {
             this.pendingMapping.Subject = (subject, args) =>
             {

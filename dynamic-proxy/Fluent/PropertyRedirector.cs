@@ -23,22 +23,11 @@ namespace AutoProxy.Fluent
     /// <typeparam name="TSubjectResult">The type of the T subject result.</typeparam>
     /// <typeparam name="TProxyResult">The type of the T proxy result.</typeparam>
     /// <remarks>TODO: Refine documentation</remarks>
-    public class PropertyRedirector<TSubject, TSubjectResult, TProxyResult> : ProxyBuilder<TSubject, TSubjectResult>,
-            IWithGetOrSetRedirector<TSubject, TSubjectResult, TProxyResult>
+    public class PropertyRedirector<TSubject, TProxy, TSubjectResult, TProxyResult> : ProxyBuilder<TSubject, TProxy, TSubjectResult>,
+            IWithGetOrSetRedirector<TSubject, TProxy, TSubjectResult, TProxyResult>
             where TSubject : class
+            where TProxy : class
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ProxyBuilder{TSubjectResult}" /> class.
-        /// </summary>
-        /// <param name="generator">The generator.</param>
-        /// <param name="subject">The subject.</param>
-        /// <remarks>TODO: Refine documentation</remarks>
-        public PropertyRedirector(ProxyGenerator generator, TSubject subject)
-            : base(generator, subject)
-        {
-            
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyRedirector{TProxyResult}" /> class.
         /// </summary>
@@ -46,23 +35,27 @@ namespace AutoProxy.Fluent
         public PropertyRedirector()
         {}
 
-
         /// <summary>
         /// Specifies how to transform the resulting call of the subject to the proxy result.
         /// </summary>
         /// <param name="transform">The transform.</param>
         /// <returns>The proxy build object</returns>
         /// <remarks>TODO: Refine documentation</remarks>
-        public IWithSetRedirector<TSubject, TSubjectResult, TProxyResult> WithGetter(Func<TSubjectResult, TProxyResult> transform)
+        public IWithSetRedirector<TSubject, TProxy, TSubjectResult, TProxyResult> WithGetter(Func<TSubjectResult, TProxyResult> transform)
         {
-            this.pendingMapping.Name = "get_" + this.pendingMapping.Name;
-            this.pendingMapping.Subject = (subject, parameters) =>
+            var mapping = new MethodMapping()
             {
-                TSubjectResult result = this.accesor(((TSubject)subject));
-                return transform(result);
+                Name = "get_" + this.pendingMapping.Name,
+                Subject = (subject, parameters) =>
+                    {
+                        TSubjectResult result = this.accesor(((TSubject)subject));
+                        return transform(result);
+                    },
+                ArgumentTypes = Type.EmptyTypes,
+                GenericArgumentTypes = Type.EmptyTypes
             };
 
-            this.map.Add(this.pendingMapping);
+            this.map.Add(mapping);
 
             return this;
         }
@@ -73,23 +66,25 @@ namespace AutoProxy.Fluent
         /// <param name="transform">The transform.</param>
         /// <returns>The proxy builder object</returns>
         /// <remarks>TODO: Refine documentation</remarks>
-        public IWithGetRedirector<TSubject, TSubjectResult, TProxyResult> WithSetter(
+        public IWithGetRedirector<TSubject, TProxy, TSubjectResult, TProxyResult> WithSetter(
             Func<TProxyResult, TSubjectResult> transform)
         {
-
-            this.pendingMapping.Name = "set_" + this.pendingMapping.Name;
-            this.pendingMapping.ArgumentTypes = new Type[] { typeof(TProxyResult) };
-            this.pendingMapping.Subject = (subject, parameters) =>
+            var mapping = new MethodMapping()
             {
-                TProxyResult argument = (TProxyResult)(parameters[0]);
-                TSubjectResult result = transform(argument);
-                TSubject source = (TSubject)subject;
-                this.setter(source, result);
-
-                return null;
+                Name = "set_" + this.pendingMapping.Name,
+                ArgumentTypes = new Type[] { typeof(TProxyResult) },
+                GenericArgumentTypes = Type.EmptyTypes,
+                Subject = (subject, parameters) =>
+                    {
+                        TProxyResult argument = (TProxyResult)(parameters[0]);
+                        TSubjectResult result = transform(argument);
+                        TSubject source = (TSubject)subject;
+                        this.setter(source, result);
+                        return null;
+                    }
             };
 
-            this.map.Add(this.pendingMapping);
+            this.map.Add(mapping);
 
             return this;
         }

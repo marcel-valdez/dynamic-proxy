@@ -10,9 +10,6 @@ using AutoProxy.Fluent;
 namespace Test.AutoProxy
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using NUnit.Framework;
     using Test.AutoProxy.HelperClasses;
 
@@ -62,15 +59,15 @@ namespace Test.AutoProxy
             // Act
             target = source.Proxify()
                            .Redirect(subject => subject.UnmappedProperty)
-                           .To((IMoreProperties proxy) => proxy.ExtraGetProperty)
+                           .Into<IMoreProperties>()
+                           .Property(proxy => proxy.ExtraGetProperty)
                            .WithGetter(argument => int.Parse(argument))
-                           .Into<IMoreProperties>();
+                           .Proxy;
 
             // Assert
             Assert.That(target, Is.Not.Null);
             Assert.That(target.ExtraGetProperty, Is.EqualTo(expectedExtraProperty));
         }
-
 
         [Test]
         public void TestIfItCanBuildSetterRedirections()
@@ -92,15 +89,52 @@ namespace Test.AutoProxy
             // Act
             target = source.Proxify()
                            .Redirect(subject => subject.UnmappedProperty)
-                           .To((IMoreProperties proxy) => proxy.ExtraGetSetProperty)
+                           .Into<IMoreProperties>()
+                           .Property(proxy => proxy.ExtraGetSetProperty)
                            .WithSetter((int proxyArgument) => proxyArgument.ToString())
-                           .Into<IMoreProperties>();
+                           .Proxy;
 
             target.ExtraGetSetProperty = expectedExtraProperty;
 
             // Assert
             Assert.That(target, Is.Not.Null);
             Assert.That(source.UnmappedProperty, Is.EqualTo(expectedUnmappedProperty));
+        }
+
+
+        [Test]
+        public void TestIfItCanBuildPropertyRedirections()
+        {
+            // Arrange
+            IMoreProperties target;
+            string expectedName = "expected";
+            int expectedAge = 1;
+            int expectedExtraProperty = 5;
+            string expectedUnmappedProperty = "5";
+            MoreProperties source = new MoreProperties
+            {
+                Name = expectedName,
+                Age = expectedAge,
+                UnmappedProperty = expectedExtraProperty.ToString()
+            };
+
+
+            // Act
+            target = source.Proxify()
+                           .Redirect(subject => subject.UnmappedProperty)
+                           .Into<IMoreProperties>()
+                           .Property(proxy => proxy.ExtraGetSetProperty)
+                           .WithGetter(subjectResult => int.Parse(subjectResult))
+                           .WithSetter(proxyArgument => proxyArgument.ToString())
+                           .Proxy;
+
+            target.ExtraGetSetProperty = expectedExtraProperty;
+            int getterResult = target.ExtraGetSetProperty;
+
+            // Assert
+            Assert.That(target, Is.Not.Null);
+            Assert.That(source.UnmappedProperty, Is.EqualTo(expectedUnmappedProperty));
+            Assert.That(getterResult, Is.EqualTo(expectedExtraProperty));
         }
 
         [Test]
@@ -114,16 +148,20 @@ namespace Test.AutoProxy
             // Act
             target = source.Proxify()
                            .Redirect(subject => subject.IntOverloaded(With.Arg<string>()))
-                           .To((IExtraTestInterface<int> proxy) => proxy.ExtraMethod(With.Arg<int>()),
+                           .Into<IExtraTestInterface<int>>()
+                           .WithMethod((IExtraTestInterface<int> proxy) => proxy.ExtraMethod(With.Arg<int>()),
                                (int number) => number.ToString())
                            .WithReturn(result => result.ToString())
-                           .Into<IExtraTestInterface<int>>();
+                           .Proxy;
 
             string actual = target.ExtraMethod(expectedNumber);
 
             // Assert
             Assert.That(target, Is.Not.Null);
             Assert.That(actual, Is.EqualTo(TestClass.IntOverloadedStringReturn.ToString()));
+
+            // Reset
+            TestClass.IntOverloadedStringReturn = int.MinValue;
         }
 
         [Test]
@@ -137,32 +175,89 @@ namespace Test.AutoProxy
             // Act
             target = source.Proxify()
                            .Redirect(subject => subject.IntOverloaded(With.Arg<string>()))
-                           .To((IExtraTestInterface<int> proxy) => proxy.ExtraMethod(With.Arg<int>()),
+                           .Into<IExtraTestInterface<int>>()
+                           .WithMethod(proxy => proxy.ExtraMethod(With.Arg<int>()),
                                (int number) => number.ToString())
                            .WithReturn(result => result.ToString())
-                           .Into<IExtraTestInterface<int>>();
+                           .Proxy;
+                           
 
             string actual = target.ExtraMethod(expectedNumber);
 
             // Assert
             Assert.That(target, Is.Not.Null);
             Assert.That(actual, Is.EqualTo(TestClass.IntOverloadedStringReturn.ToString()));
+
+            // Reset
+            TestClass.IntOverloadedStringReturn = int.MinValue;
         }
 
         [Test]
         public void TestIfItCanRedirectAVoidMethodCall()
         {
             // Arrange
-            
+            int expectedNumber = 5;
+            TestClass source = new TestClass();
+            IExtraTestInterface<int> target;
 
             // Act
+            target = source.Proxify()
+                           .Redirect(subject => subject.VoidOverloaded(With.Arg<String>()))
+                           .Into<IExtraTestInterface<int>>()
+                           .WithMethod(proxy => proxy.ExtraVoidMethod(With.Arg<int>()),
+                               (int number) => number.ToString())
+                           .Proxy;
+                           
 
+            target.ExtraVoidMethod(expectedNumber);
 
             // Assert
+            Assert.That(target, Is.Not.Null);
+            Assert.That(source.VoidOverloadedStringCalled, Is.True);
+        }
+
+        [Test]
+        public void TestIfItCanRedirectAVoidMethodNoParams()
+        {
+            // Arrange
+            TestClass source = new TestClass();
+            IExtraTestInterface<int> target;
+
+            // Act
+            target = source.Proxify()
+                           .Redirect(subject => subject.VoidOverloaded())
+                           .Into<IExtraTestInterface<int>>()
+                           .WithMethod(proxy => proxy.ExtraVoidMethodNoParams())
+                           .Proxy;
 
 
-            // Reset
+            target.ExtraVoidMethodNoParams();
 
+            // Assert
+            Assert.That(target, Is.Not.Null);
+            Assert.That(source.VoidOverloadedCalled, Is.True);
+        }
+
+        [Test]
+        public void TestIfItCanRedirectAMethodWithNoParams()
+        {
+            // Arrange
+            TestClass source = new TestClass();
+            IExtraTestInterface<int> target;
+
+            // Act
+            target = source.Proxify()
+                           .Redirect(subject => subject.IntOverloaded())
+                           .Into<IExtraTestInterface<int>>()
+                           .WithMethod(proxy => proxy.ExtraStringMethodNoParams())
+                           .WithReturn(number => number.ToString())
+                           .Proxy;
+
+            string result = target.ExtraStringMethodNoParams();
+
+            // Assert
+            Assert.That(target, Is.Not.Null);
+            Assert.That(result, Is.EqualTo(TestClass.IntOverloadedNoParamReturn.ToString()));
         }
     }
 }

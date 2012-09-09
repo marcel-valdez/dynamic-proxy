@@ -8,7 +8,7 @@ namespace AutoProxy
     {
         private readonly static ProxyGenerator generator = new ProxyGenerator();
 
-        public static IProxyBuilder<T> Proxify<T>(this T subject)
+        public static IStandardProxy<T> Proxify<T>(this T subject)
             where T : class
         {
             return new ProxyBuilder<T>(generator, subject);

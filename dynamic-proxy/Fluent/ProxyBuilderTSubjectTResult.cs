@@ -16,9 +16,8 @@ namespace AutoProxy.Fluent
     using System;
     using System.Linq;
     using System.Linq.Expressions;
-    using Castle.DynamicProxy;
-    using System.Collections.Generic;
     using System.Reflection;
+    using Castle.DynamicProxy;
     using Fasterflect;
 
     /// <summary>
@@ -27,7 +26,7 @@ namespace AutoProxy.Fluent
     /// <typeparam name="TSubject">The type of the T subject.</typeparam>
     /// <typeparam name="TSubjectResult">The type of the T subject result.</typeparam>
     public class ProxyBuilder<TSubject, TSubjectResult> : ProxyBuilder<TSubject>,
-        IToRedirector<TSubject, TSubjectResult>
+        IIntoRedirector<TSubject, TSubjectResult>
         where TSubject : class
     {
         /// <summary>
@@ -44,11 +43,6 @@ namespace AutoProxy.Fluent
         /// The subject invocation to redirect
         /// </summary>
         protected Action<TSubject, TSubjectResult> setter;
-
-        /// <summary>
-        /// Pending mapping to be build
-        /// </summary>
-        protected MethodMapping pendingMapping;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProxyBuilder{TSubjectResult}" /> class.
@@ -88,59 +82,10 @@ namespace AutoProxy.Fluent
             return this;
         }
 
-        /// <summary>
-        /// Sets the invocation to redirect.
-        /// </summary>
-        /// <param name="invocation">The invocation.</param>
-        /// <returns>Returns itself</returns>
-        public ProxyBuilder<TSubject, TSubjectResult> SetInvocation(Expression<Action<TSubject, TSubjectResult>> invocation)
+        public new IToRedirector<TSubject, TProxy, TSubjectResult> Into<TProxy>()
+            where TProxy : class
         {
-            //this.memberSet = invocation.Compile();
-            return this;
-        }
-
-
-        public IWithGetOrSetRedirector<TSubject, TSubjectResult, TProxyResult> To<TProxy, TProxyResult>(
-            Expression<Func<TProxy, TProxyResult>> invocation) where TProxy : class
-        {
-            MethodMapping mapping = GetMemberAccessInfo(invocation);
-            var propertyRedirector = new PropertyRedirector<TSubject, TSubjectResult, TProxyResult>()
-            {
-                generator = this.generator,
-                map = this.map,
-                setter = this.setter,
-                accesor = this.accesor,
-                pendingMapping = mapping
-            };
-
-            return propertyRedirector;
-        }
-
-        public IWithReturnRedirector<TSubject, TProxyResult, TSubjectResult> To<TProxy, TProxyResult, TSubjectParam, TProxyParam>(
-            Expression<Func<TProxy, TProxyResult>> invocation, Func<TProxyParam, TSubjectParam> with) where TProxy : class
-        {
-            MethodMapping mapping = GetMemberAccessInfo(invocation);
-            var returnRedirector = new ProxyReturnRedirector<TSubject, TProxyResult, TSubjectResult>()
-            {
-                generator = this.generator,
-                map = this.map,
-                pendingMapping = mapping,
-                accesor = this.accesor,
-                setter = this.setter,
-                methodCall = this.methodCall,
-                ParametersTransformation = (arguments) => new object[] { with((TProxyParam)arguments[0]) }
-            };
-
-            // That's about it. (leave a pending mapping)
-            // Make a new Proxy ReturnRedirector with previous data.
-            return returnRedirector;
-        }
-
-        public IWithReturnRedirector<TSubject, TSubjectResult, TSubjectResult> To<TProxy, TProxyResult, TSubjectParam>(
-            Expression<Func<TProxy, TProxyResult>> invocation,
-            TSubjectParam with) where TProxy : class
-        {
-            throw new NotImplementedException();
+            return Prototype<TProxy>();
         }
 
         /// <summary>
@@ -180,8 +125,10 @@ namespace AutoProxy.Fluent
                     if (property.CanWrite)
                     {
                         // Create and compile the member setter
-                        var method = property.GetSetMethod();
-                        return (subject, args) => method.Invoke(subject, new object[] { args });
+                        MethodInfo method = property.GetSetMethod();
+                        MethodInvoker invoker = method.DelegateForCallMethod();
+
+                        return (subject, arg) => invoker(subject, arg);
                     }
                 }
             }
@@ -197,7 +144,7 @@ namespace AutoProxy.Fluent
         /// <param name="invocation">The invocation expression.</param>
         /// <returns>The filled in MethodMapping with pending Subject</returns>
         /// <exception cref="System.InvalidOperationException">If the invocation is not a method or property call</exception>
-        private static MethodMapping GetMemberAccessInfo<TProxy, TResult>(Expression<Func<TProxy, TResult>> invocation)
+        protected static MethodMapping GetMemberAccessInfo<TProxy, TResult>(Expression<Func<TProxy, TResult>> invocation)
                         where TProxy : class
         {
             MethodMapping info = new MethodMapping();
@@ -241,27 +188,31 @@ namespace AutoProxy.Fluent
         /// </summary>
         /// <param name="invocation">The invocation.</param>
         /// <returns>The translated method call</returns>
-        private Func<TSubject, object[], TSubjectResult> GetMethodCall(Expression<Func<TSubject, TSubjectResult>> invocation)
+        private static Func<TSubject, object[], TSubjectResult> GetMethodCall(Expression<Func<TSubject, TSubjectResult>> invocation)
         {
             MethodCallExpression methodExpression = invocation.Body as MethodCallExpression;
             MethodInfo method = methodExpression.Method;
-
+            MethodInvoker invoker = method.DelegateForCallMethod();
             Func<TSubject, object[], TSubjectResult> methodCall = (subject, parameters) =>
             {
-                return (TSubjectResult)method.Invoke(subject, parameters);
+                return (TSubjectResult)invoker(subject, parameters);
             };
 
             return methodCall;
         }
 
-        private static Type[] GetArgumentTypes(MethodInfo method)
+        protected ProxyBuilder<TSubject, TProxy, TSubjectResult> Prototype<TProxy>()
+                               where TProxy : class
         {
-            return method.GetParameters().Select(arg => arg.ParameterType).ToArray();
-        }
-
-        private static Type[] GetGenericArgumentTypes(MethodInfo method)
-        {
-            return method.GetGenericArguments().Select(arg => arg.DeclaringType).ToArray();
+            return new ProxyBuilder<TSubject, TProxy, TSubjectResult>()
+                        {
+                            generator = this.generator,
+                            map = this.map,
+                            accesor = this.accesor,
+                            setter = this.setter,
+                            methodCall = this.methodCall,
+                            pendingMapping = this.pendingMapping
+                        };
         }
     }
 }
