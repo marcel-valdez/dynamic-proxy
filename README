@@ -6,52 +6,46 @@
   // This is the class we want to profixy, normally, this class is in
   // a third party library or framework, otherwise we would just add: 
   // Wrapped : IWrapper to the class definition
-  public class Wrapped {
+public class Wrapped {
 	private string mProperty = "";
 	private string mUnmatched = "";
 	public void CallMethod() {
-	  Console.WriteLine("Wrapped.CallMethod()");
+  		Console.WriteLine("Wrapped.CallMethod()");
 	}
-	
+
 	public string Property {
-	  get {
-	Console.WriteLine("Wrapped.Property.get, with value: {0}", this.mProperty);
-	return this.mProperty;
-	  }
-		
-	  set {
-	Console.WriteLine("Wrapped.Property.set, with value: {0}", value);
-	this.mProperty = value;
-	  }
+  		get {
+			Console.WriteLine("Wrapped.Property.get, with value: {0}", this.mProperty);
+			return this.mProperty;
+  		}
+	
+  		set {
+			Console.WriteLine("Wrapped.Property.set, with value: {0}", value);
+			this.mProperty = value;
+  		}
 	}
 
 	public string UnmatchedProperty {
-	  get {
-		Console.WriteLine("Wrapped.UnmatchedProperty.get, returned value: {0}", this.mUnmatched);
-		return this.mUnmatched;
-	  }
+  		get {
+			Console.WriteLine("Wrapped.UnmatchedProperty.get, returned value: {0}", this.mUnmatched);
+			return this.mUnmatched;
+  		}
 
-	  set {
-		Console.WriteLine("Wrapped.UnmatchedProperty.set, input value: {0}", value);
-		this.mUnmatched = value;
-	  }
+		  set {
+			Console.WriteLine("Wrapped.UnmatchedProperty.set, input value: {0}", value);
+			this.mUnmatched = value;
+  		}
 	}
-  }
-  
-  // The wrapper interface, through which we will use the Wrapped object
-  public interface IWrapper {
+}
+
+// The wrapper interface, through which we will use the Wrapped object
+public interface IWrapper {
 	void CallMethod();
-	
-	string Property {
-	  get;
-	  set;
-	}
 
-	int NonMatch {
-	  get;
-	  set;
-	}
-  }
+	string Property { get; set; }
+	
+	int NonMatch { get; set; }
+}
   
   /*
   * In order to "proxify" the Wrapped class we just use the following
@@ -73,16 +67,16 @@ void Main() {
 	}
 	
 	public static void Test(IWrapper wrapper) {
-	  wrapper.CallMethod();
-	  wrapper.Property = "Hi";
-	  string data = wrapper.Property;
+		wrapper.CallMethod();
+		wrapper.Property = "Hi";
+		string data = wrapper.Property;
 	}
 
 	public static void TestNonMatch(IWrapper wrapper) {
-	  wrapper.NonMatch = 1;
-	  int result = wrapper.NonMatch;
+		wrapper.NonMatch = 1;
+		int result = wrapper.NonMatch;
 	}
-
+}
 
   /*
   * Console output:
