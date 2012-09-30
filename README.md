@@ -1,9 +1,12 @@
+What is it?
+===========
+<b>Dynamic proxy (a.k.a. AutoProxy)</b> is an automatic proxy creator, meant to wrap classes of
+which we don't have the source code, but need to make them testable, mockable,
+or substitutable by wrapping them with an interface.
+
+Sample Usage
+============
 `````csharp
-/**
- * Dynamic proxy is an automatic proxy creator, meant to wrap classes 
- * of which we don't have the source code, but need to make them testable,
- * mockable, or substitutable by wrapping them with an interface.
- **/
   // This is the class we want to profixy, normally, this class is in
   // a third party library or framework, otherwise we would just add: 
   // Wrapped : IWrapper to the class definition
